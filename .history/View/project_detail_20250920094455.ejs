@@ -1,0 +1,61 @@
+<% layout('layout') -%>
+<h2><%= project.title %></h2>
+<p>Code: <%= project.code %></p>
+<p>Category: <%= project.Category ? project.Category.name : '-' %></p>
+<p>Goal: <%= project.goalAmount %> | Current: <%= project.currentAmount %></p>
+
+<div class="mb-3">
+  <div class="progress" style="height:24px;">
+    <div class="progress-bar" role="progressbar" data-percent="<%= percent || 0 %>">
+      <%= percent || 0 %>% 
+    </div>
+  </div>
+</div>
+
+<h4>Reward Tiers</h4>
+<ul>
+  <% project.RewardTiers.forEach(r => { %>
+    <li><strong><%= r.name %></strong> - min <%= r.minAmount %> - quota: <%= r.quota %></li>
+  <% }) %>
+</ul>
+
+<hr/>
+<h4>Make a Pledge</h4>
+<% if (!currentUser) { %>
+  <p>กรุณา <a href="/login">login</a> ก่อนเพื่อสนับสนุน</p>
+<% } else { %>
+  <form method="POST" action="/pledge" class="row g-2">
+    <input type="hidden" name="projectId" value="<%= project.id %>">
+    <div class="col-md-3">
+      <label>Amount</label>
+      <input name="amount" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+      <label>Reward (optional)</label>
+      <select name="rewardId" class="form-select">
+        <option value="">ไม่มีรางวัล</option>
+        <% project.RewardTiers.forEach(r => { %>
+          <option value="<%= r.id %>"><%= r.name %> (min <%= r.minAmount %>, left <%= r.quota %>)</option>
+        <% }) %>
+      </select>
+    </div>
+    <div class="col-md-2 align-self-end">
+      <button class="btn btn-success">Send Pledge</button>
+    </div>
+  </form>
+<% } %>
+
+<hr/>
+<p>Accepted pledges: <%= accepted %> | Rejected pledges: <%= rejected %></p>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll('.progress-bar').forEach(bar => {
+      const percent = bar.getAttribute('data-percent') || 0;
+      bar.style.width = percent + '%';
+    });
+  });
+</script>
+
+
+

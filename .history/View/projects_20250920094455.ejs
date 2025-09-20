@@ -1,0 +1,42 @@
+<% layout('layout') -%>
+<h2>Projects</h2>
+
+<form class="row g-2 mb-3">
+  <div class="col-md-4">
+    <input name="q" value="<%= q %>" class="form-control" placeholder="ค้นหาชื่อโครงการ">
+  </div>
+  <div class="col-md-3">
+    <select name="category" class="form-select">
+      <option value="">ทุกหมวดหมู่</option>
+      <% categories.forEach(c => { %>
+        <option value="<%= c.id %>" <%= category==c.id ? 'selected' : '' %>><%= c.name %></option>
+      <% }) %>
+    </select>
+  </div>
+  <div class="col-md-3">
+    <select name="sort" class="form-select">
+      <option value="">จัดเรียง (เริ่มต้น)</option>
+      <option value="newest" <%= sort==='newest' ? 'selected':'' %>>ใหม่สุด</option>
+      <option value="ending" <%= sort==='ending' ? 'selected':'' %>>ใกล้หมดเวลา</option>
+      <option value="funded" <%= sort==='funded' ? 'selected':'' %>>ระดมได้มากสุด</option>
+    </select>
+  </div>
+  <div class="col-md-2">
+    <button class="btn btn-primary">Go</button>
+  </div>
+</form>
+
+<div class="row">
+  <% projects.forEach(p => { %>
+    <div class="col-md-6 mb-3">
+      <div class="card p-3">
+        <h5><a href="/projects/<%= p.id %>"><%= p.title %></a></h5>
+        <p>หมวด: <%= p.Category ? p.Category.name : '-' %></p>
+        <p>ยอด: <%= p.currentAmount %> / <%= p.goalAmount %></p>
+        <p>Deadline: <%= p.deadline.toLocaleDateString() %></p>
+        <a href="/projects/<%= p.id %>" class="btn btn-sm btn-outline-primary">ดูรายละเอียด</a>
+      </div>
+    </div>
+  <% }) %>
+</div>
+
